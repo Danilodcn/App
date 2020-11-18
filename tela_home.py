@@ -23,7 +23,6 @@ class TelaHome(BoxLayout):
         self.gera_botoes(.3)
 
     def botao(self, botao):
-        print("Clicando ", botao.text, botao)
 
         dirs = os.listdir("./imagens/home")
         fonte = random.choice(dirs)
@@ -42,14 +41,15 @@ class TelaHome(BoxLayout):
         self.add_widget(box)
 
     def gera_botoes(self, h_rint=1):
-        p = [f"{i}sp" for i in [40, 40, 40, 40]]
-        box = BoxLayout(orientation="horizontal", padding=p, spacing="60sp")
+        p = [f"{i}sp" for i in [40, 5, 40, 40]]
+        box = BoxLayout(orientation="vertical", padding=p, spacing="10sp")
         box.size_hint_y = h_rint
         
-        bnt1 = Button(text="Calculos", on_release=self.botao)
-
+        bnt0 = Button(text="Atualizar", on_release=self.botao)
+        bnt1 = Button(text="Calculos")
         bnt2 = Button(text="Sair")
-
+        
+        box.add_widget(bnt0)
         box.add_widget(bnt1)
         box.add_widget(bnt2)
         self.add_widget(box)
