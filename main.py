@@ -54,5 +54,6 @@ class TesteApp(App):
 if __name__ == "__main__":
 
     from kivy.core.window import Window
+    Window.size = (350, 700)
     Window.clearcolor = get_color_from_hex("#4C6B8A")
     TesteApp().run()

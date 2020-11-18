@@ -42,8 +42,8 @@ class TelaHome(BoxLayout):
         self.add_widget(box)
 
     def gera_botoes(self, h_rint=1):
-        p = [f"{i}sp" for i in [40, 40, 40, 40]]
-        box = BoxLayout(orientation="horizontal", padding=p, spacing="60sp")
+        p = [f"{i}sp" for i in [40, 5, 40, 40]]
+        box = BoxLayout(orientation="vertical", padding=p, spacing="30sp")
         box.size_hint_y = h_rint
         
         bnt1 = Button(text="Calculos", on_release=self.botao)
