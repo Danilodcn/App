@@ -6,9 +6,14 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
+from kivy.core.window import Window
 
-try: from .tela_home import TelaHome
-except: from tela_home import TelaHome
+try: 
+    from .tela_home import TelaHome
+    from .tela_calculos import TelaCalculos
+except: 
+    from tela_home import TelaHome
+    from tela_calculos import TelaCalculos
 
 
 class GerenciadorTelas(ScreenManager):
@@ -30,14 +35,17 @@ class TesteApp(App):
         self.root.ids.update(home.ids)
 
         self.root.current = "home"
-        print(self.root.ids)
         self.root.ids["home_botao_sair"].bind(on_release=self.home_sair)
+        self.root.ids["home_botao_calculos"].bind(on_release=self.botao_vai_para_tela("calculos"))
+
+        self.gerar_tela_calculos()
+
 
     def home_sair(self, botao):
         box = BoxLayout(orientation="vertical", padding="10sp", spacing="10sp")
         botoes = BoxLayout(padding="10sp", spacing="10sp")
 
-        pop = Popup(title="Quer mesmo sair?", content=box, title_size="25sp", size_hint=(.35, .35))
+        pop = Popup(title="Quer mesmo sair?", content=box, title_size="25sp", size_hint=(.6, .35))
         pop.opacity = .85
         imagem = Image(source="./imagens/atencao.png")
 
@@ -49,6 +57,21 @@ class TesteApp(App):
         box.add_widget(imagem)
         box.add_widget(botoes)
         pop.open()
+    
+    def botao_vai_para_tela(self, nome_tela:str):
+        def interna(*args, **kw):
+            self.root.current = nome_tela
+        return interna
+
+    def gerar_tela_calculos(self, *args):
+        calculos = TelaCalculos(Window.size)
+        screen = Screen(name="calculos")
+        screen.add_widget(calculos)
+        self.root.add_widget(screen)
+        self.root.ids.update(calculos.ids)
+
+        self.root.ids['calculos_botao_voltar'].bind(on_release=self.botao_vai_para_tela("home"))
+
 
 
 if __name__ == "__main__":
