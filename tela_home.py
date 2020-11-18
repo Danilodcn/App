@@ -23,7 +23,6 @@ class TelaHome(BoxLayout):
         self.gera_botoes(.3)
 
     def botao(self, botao):
-        print("Clicando ", botao.text, botao)
 
         dirs = os.listdir("./imagens/home")
         fonte = random.choice(dirs)
