@@ -19,21 +19,41 @@ except:
 class GerenciadorTelas(ScreenManager):
     pass
 
+class HomePop(Popup):
+    aberto = False
+    def __init__(self, **kwargs):
+        super(HomePop, self).__init__(**kwargs)
+        HomePop.aberto = False 
+
 class Home(Screen):
     def __init__(self, **kwargs):
         super(Home, self).__init__(**kwargs)
 
     def on_pre_enter(self):
-        print("Carregando")
-        Window.bind(on_request_close=self.funcao)
+        Window.bind(on_request_close=self.confirmacao_saida, on_keyboard=self.clica_botoes)
+        Window.on_keyboard
 
-    def funcao(self, *args, **kw):
+    def clica_botoes(self, win, key, *args, **kwargs):
+        if key == 27:
+            self.confirmacao_saida()
+        return True
+        
+
+    def confirmacao_saida(self, *args, **kw):
+        if HomePop.aberto: 
+            return True
+
         box = BoxLayout(orientation="vertical", padding="10sp", spacing="10sp")
         botoes = BoxLayout(padding="10sp", spacing="10sp")
 
-        pop = Popup(title="Quer mesmo sair?", content=box, title_size="20dp", size_hint=(.6, .35))
+        pop = HomePop(title="Quer mesmo sair?", content=box, title_size="20dp", size_hint=(.6, .35))
         pop.opacity = .85
         imagem = Image(source="./imagens/atencao.png")
+
+        def fecha_popup(*args):
+            HomePop.aberto = False
+
+        pop.on_dismiss=fecha_popup
 
         sim = Button(text="sim", font_size="15sp", on_release=App.get_running_app().stop)
         nao = Button(text="nao", font_size="15sp", on_release=pop.dismiss)
@@ -42,9 +62,11 @@ class Home(Screen):
 
         box.add_widget(imagem)
         box.add_widget(botoes)
+ 
+        HomePop.aberto = True
         pop.open()
-
         return True
+
 
 class Tela(Screen):
     def __init__(self, **kwargs):
@@ -60,6 +82,7 @@ class Tela(Screen):
         root:ScreenManager = App.get_running_app().root
         if key == 27:
             root.current = "home"
+
         if root.current == "calculos":
             if key == 13 or key == 271:
                 calculos = root.ids["tela_calculos"]
@@ -92,21 +115,9 @@ class TesteApp(App):
 
 
     def home_sair(self, *args):
-        box = BoxLayout(orientation="vertical", padding="10sp", spacing="10sp")
-        botoes = BoxLayout(padding="10sp", spacing="10sp")
-
-        pop = Popup(title="Quer mesmo sair?", content=box, title_size="25sp", size_hint=(.6, .35))
-        pop.opacity = .85
-        imagem = Image(source="./imagens/atencao.png")
-
-        sim = Button(text="sim", font_size="20sp", on_release=App.get_running_app().stop)
-        nao = Button(text="nao", font_size="20sp", on_release=pop.dismiss)
-        botoes.add_widget(sim)
-        botoes.add_widget(nao)
-
-        box.add_widget(imagem)
-        box.add_widget(botoes)
-        pop.open()
+        home: Home = self.root.get_screen("home")
+        home.confirmacao_saida()
+        return True
     
     def botao_vai_para_tela(self, nome_tela:str):
         def interna(*args, **kw):
